@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model leads {
+  id            Int      @id @default(autoincrement())
+  customerName  String   @db.VarChar(64)
+  companyName   String   @db.VarChar(64)
+  country       String   @db.VarChar(64)
+  phone         String   @db.VarChar(64)
+  timeOfSignUp  DateTime @default(now()) @db.Timestamp(0)
+  asignedToUser Int
+  cutomerIp     String   @db.VarChar(64)
+  createdAt     DateTime @default(now()) @db.Timestamp(0)
+  updatedAt     DateTime @default(now()) @db.Timestamp(0)
+  users         users    @relation(fields: [asignedToUser], references: [id], onDelete: Cascade, map: "leads_ibfk_1")
+
+  @@index([asignedToUser], map: "asignedToUser")
+}
+
+model users {
+  id        Int      @id @default(autoincrement())
+  email     String   @db.VarChar(127)
+  password  String   @db.VarChar(64)
+  phone     String   @db.VarChar(20)
+  name      String   @db.VarChar(64)
+  role      String   @db.VarChar(64)
+  team      String   @db.VarChar(64)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @db.Timestamp(0)
+  leads     leads[]
+}
