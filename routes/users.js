@@ -80,6 +80,26 @@ router.post("/sign-in", async function (req, res, next) {
     res.status(500).json({ status: "error", message: error.message });
   }
 });
+
+router.get("/check-connection", async function (req, res, next) {
+  try {
+    const prisma = new PrismaClient({
+      datasources: {
+        db: {
+          url: `${process.env.DATABASE_URL}`,
+        },
+      },
+    });
+    await prisma.$connect();
+    console.log("Database connection successful");
+
+    res.json({ status: "success" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: "error", message: error.message });
+  }
+});
+
 router.delete("/", function (req, res, next) {
   res.json({ status: "success", message: "api hitted " });
 });
